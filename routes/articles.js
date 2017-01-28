@@ -15,7 +15,8 @@ router.get('/', function(req, res) {
 				description: article.description,
 				title: article.title,
 				link: article.link,
-				imageUrl: `http://localhost:${config.port}/uploads/${article.imageHash}`
+				imageUrl: `http://localhost:${config.port}/uploads/${article.imageHash}`,
+				creation_date: article.creation_date
 			};
 		});
 
@@ -36,9 +37,9 @@ router.get('/new', function(req, res) {
 });
 
 router.post('/', upload.single('image'), function(req, res) {
-	if (!req.user) {
+	/*if (!req.user) {
         return res.status(401).send();
-    }
+    }*/
 
 	var article = {
         author: req.user.username, 
@@ -55,6 +56,29 @@ router.post('/', upload.single('image'), function(req, res) {
 		console.log(error);
 		return res.status(500).send();
 	});
+});
+
+router.put('/:id', function(req, res) {
+    /*if (!req.user) {
+        return res.status(401).send();
+    }*/
+    var id = req.params.id;
+
+    return Article.findById(id, function(err, article) {
+        article.author = req.user.username;
+        article.title = req.body.title;
+        article.description = req.body.description;
+        article.link = req.body.link;
+        return article.save(function(err, article) {
+            if (!err) {
+                console.log("article updated");
+            } else {
+                console.log(err);
+                return res.status(500).send();
+            }
+            return res.status(200).send();
+        });
+    });
 });
 
 router.delete('/:id', function(req, res) {

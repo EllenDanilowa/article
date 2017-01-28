@@ -22,7 +22,7 @@ mongoose.connect(`mongodb://${config.mongo.user}:${config.mongo.password}@ds1193
 } );
 
 app.use(cors( {
-    origin: 'http://localhost:3000',
+    origin: '*',
 	credentials: true
 }));
 app.use(bodyParser.json());
