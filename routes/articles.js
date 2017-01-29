@@ -11,6 +11,7 @@ router.get('/', function(req, res) {
 		const newArticles = [];
 		articles.forEach((article, index) => {
 			newArticles[index] = {
+				_id: article._id,
 				author: article.author,
 				description: article.description,
 				title: article.title,
@@ -64,21 +65,13 @@ router.put('/:id', function(req, res) {
     }*/
     var id = req.params.id;
 
-    return Article.findById(id, function(err, article) {
-        article.author = req.user.username;
-        article.title = req.body.title;
-        article.description = req.body.description;
-        article.link = req.body.link;
-        return article.save(function(err, article) {
-            if (!err) {
-                console.log("article updated");
-            } else {
-                console.log(err);
-                return res.status(500).send();
-            }
-            return res.status(200).send();
-        });
-    });
+    var article = {
+        title: req.body.title,
+        description: req.body.description,
+        link: req.body.link
+    };
+
+    ArticleController.updateArticle(id, article);
 });
 
 router.delete('/:id', function(req, res) {

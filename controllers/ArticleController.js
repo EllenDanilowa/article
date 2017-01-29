@@ -50,3 +50,19 @@ module.exports.deleteArticle = function(id) {
     	});
 	});
 }
+
+module.exports.updateArticle = function(id, newArticle) {
+    return new Promise(function(resolve, reject) {
+        Article.findById(id, function(err, article) {
+            article.title = newArticle.title;
+            article.description = newArticle.description;
+            article.link = newArticle.link;
+            return article.save(function(err, article) {
+                if (err) {
+                    reject(err);
+                } 
+                resolve();
+            });
+        });
+    });
+}
