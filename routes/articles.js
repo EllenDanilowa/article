@@ -41,9 +41,9 @@ router.post('/', upload.single('image'), function(req, res) {
 	/*if (!req.user) {
         return res.status(401).send();
     }*/
-
+    
 	var article = {
-        author: req.user.username, 
+        author: 'admin', 
         title: req.body.title,
         description: req.body.description,
         link: req.body.link,
@@ -71,7 +71,13 @@ router.put('/:id', function(req, res) {
         link: req.body.link
     };
 
-    ArticleController.updateArticle(id, article);
+    ArticleController.updateArticle(id, article).then(() => {
+    	return res.status(200).send();
+	})
+	.catch((error) => {
+		console.log(error);
+		return res.status(500).send();
+	});
 });
 
 router.delete('/:id', function(req, res) {
